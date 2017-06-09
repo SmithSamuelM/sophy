@@ -62,6 +62,7 @@ cdef inline _getstring(void *obj, const char *key):
         int nlen
 
     buf = <char *>sp_getstring(obj, key, &nlen)
+
     if buf:
         value = buf[:nlen - 1]
         if IS_PY3K:
@@ -128,6 +129,7 @@ cdef class _ConfigManager(object):
 
     cpdef get_option(self, key, string=True):
         if string:
+            key = encode(key)  # SMS fix for python3
             return _getstring(self.sophia.handle, key)
         else:
             bkey = encode(key)

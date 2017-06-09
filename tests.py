@@ -1,7 +1,12 @@
 import os
 import shutil
 import sys
-import unittest
+
+if sys.version_info < (2, 7):
+    import unittest2 as unittest
+else:
+    import unittest
+
 
 from sophy import Sophia
 
@@ -466,5 +471,55 @@ class TestMultiIndex(BaseSophiaTestMethods, BaseTestCase):
         self.r5_1 = ('de', 'ad', 'da')
 
 
-if __name__ == '__main__':
-    unittest.main(argv=sys.argv)
+def runOne(test):
+    test = BasicTestCase(test)
+    suite = unittest.TestSuite([test])
+    unittest.TextTestRunner(verbosity=2).run(suite)
+
+def runSome():
+    tests =  []
+    names = [
+             'test_version',
+            ]
+    tests.extend(map(TestConfiguration, names))
+
+    names = [
+             'set_key_vars',
+            ]
+    tests.extend(map(TestStringIndex, names))
+
+    suite = unittest.TestSuite(tests)
+    unittest.TextTestRunner(verbosity=2).run(suite)
+
+def runTestConfiguration():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestConfiguration))
+    unittest.TextTestRunner(verbosity=2).run(suite)
+
+def runTestStringIndex():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestStringIndex))
+    unittest.TextTestRunner(verbosity=2).run(suite)
+
+def runTestU32Index():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestU32Index))
+    unittest.TextTestRunner(verbosity=2).run(suite)
+
+if __name__ == '__main__' and __package__ is None:
+
+    runTestConfiguration() #run unitests from
+    runTestU32Index()
+    #runTestStringIndex()
+
+    #runAll() #run all unittests
+
+    #runSome()#only run some
+
+    #runOne('testCodes')
+
+
+
+
+#if __name__ == '__main__':
+    #unittest.main(argv=sys.argv)
